@@ -1,4 +1,4 @@
-module github.com/edgelesssys/go-tdx-qpl
+module github.com/Ruoyu-y/go-tdx-qpl
 
 go 1.20
 
