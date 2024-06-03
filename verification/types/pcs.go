@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/edgelesssys/go-tdx-qpl/verification/status"
+	"github.com/Ruoyu-y/go-tdx-qpl/verification/status"
 )
 
 const (

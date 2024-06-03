@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/edgelesssys/go-tdx-qpl/tdx"
+	"github.com/Ruoyu-y/go-tdx-qpl/tdx"
 )
 
 func main() {

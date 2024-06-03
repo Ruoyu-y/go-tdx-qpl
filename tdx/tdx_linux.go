@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"unsafe"
 
-	"github.com/edgelesssys/go-tdx-qpl/tdx/tdxproto"
+	"github.com/Ruoyu-y/go-tdx-qpl/tdx/tdxproto"
 	"github.com/vtolstov/go-ioctl"
 	"golang.org/x/sys/unix"
 	"google.golang.org/protobuf/proto"

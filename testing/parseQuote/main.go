@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/edgelesssys/go-tdx-qpl/blobs"
-	"github.com/edgelesssys/go-tdx-qpl/verification/types"
+	"github.com/Ruoyu-y/go-tdx-qpl/blobs"
+	"github.com/Ruoyu-y/go-tdx-qpl/verification/types"
 )
 
 func main() {

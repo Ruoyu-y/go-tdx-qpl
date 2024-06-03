@@ -51,8 +51,8 @@ import (
 	"path"
 	"time"
 
-	"github.com/edgelesssys/go-tdx-qpl/verification/crypto"
-	"github.com/edgelesssys/go-tdx-qpl/verification/types"
+	"github.com/Ruoyu-y/go-tdx-qpl/verification/crypto"
+	"github.com/Ruoyu-y/go-tdx-qpl/verification/types"
 	"k8s.io/utils/clock"
 )
 

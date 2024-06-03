@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/edgelesssys/go-tdx-qpl/blobs"
+	"github.com/Ruoyu-y/go-tdx-qpl/blobs"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

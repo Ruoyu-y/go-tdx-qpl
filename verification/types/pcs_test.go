@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/edgelesssys/go-tdx-qpl/blobs"
+	"github.com/Ruoyu-y/go-tdx-qpl/blobs"
 	"github.com/stretchr/testify/assert"
 )
 
