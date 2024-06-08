@@ -21,8 +21,8 @@ const tdxQuoteType = uint32(2)
 // IOCTL calls for quote generation
 // https://github.com/intel/SGXDataCenterAttestationPrimitives/blob/c057b236790834cf7e547ebf90da91c53c7ed7f9/QuoteGeneration/quote_wrapper/tdx_attest/tdx_attest.c#L53-L56
 var (
-	requestReport = ioctl.IOWR('T', 0x01, 8)
-	requestQuote  = ioctl.IOR('T', 0x02, 8)
+	requestReport = uintptr(binary.BigEndian.Uint32([]byte{196, 64, 'T', 1}))
+	requestQuote  = uintptr(binary.BigEndian.Uint32([]byte{128, 16, 'T', 4}))
 	extendRTMR    = ioctl.IOWR('T', 0x03, 8)
 )
 
@@ -52,8 +52,8 @@ func ReadMeasurements(tdx device) ([5][48]byte, error) {
 	// TDX does not support directly reading RTMRs
 	// Instead, create a new report with zeroed user data,
 	// and read the RTMRs and MRTD from the report
-	/*report, err := createReport(tdx, [64]byte{0x00})
-	//if err != nil {
+	report, err := createReport(tdx, [64]byte{0x00})
+	if err != nil {
 		return [5][48]byte{}, fmt.Errorf("creating report: %w", err)
 	}
 
@@ -67,14 +67,13 @@ func ReadMeasurements(tdx device) ([5][48]byte, error) {
 		[48]byte(report[816:864]), // RTMR2
 		[48]byte(report[864:912]), // RTMR3
 	}
-	*/
-	measurements := [5][48]byte{
+	/*measurements := [5][48]byte{
 		[48]byte{'1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'},
 		[48]byte{'1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'},
 		[48]byte{'1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'},
 		[48]byte{'1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'},
 		[48]byte{'1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'},
-	}
+	}*/
 
 	return measurements, nil
 }
@@ -147,14 +146,11 @@ func GenerateQuote(tdx device, userData []byte) ([]byte, error) {
 func createReport(tdx device, reportData [64]byte) ([1024]byte, error) {
 	var tdReport [1024]byte
 	reportRequest := reportRequest{
-		subtype:          0,
-		reportData:       &reportData,
-		reportDataLength: 64,
-		tdReport:         &tdReport,
-		tdReportLength:   1024,
+		ReportData:       reportData,
+		TdReport:         tdReport,
 	}
 
-	if _, _, errno := unix.Syscall(unix.SYS_IOCTL, tdx.Fd(), requestReport, uintptr(unsafe.Pointer(&reportRequest))); errno != 0 {
+	if _, _, errno := unix.Syscall(unix.SYS_IOCTL, uintptr(tdx.Fd()), requestReport, uintptr(unsafe.Pointer(&reportRequest))); errno != 0 {
 		return [1024]byte{}, fmt.Errorf("creating TDX report: %w", errno)
 	}
 	return tdReport, nil
@@ -186,11 +182,8 @@ Taken from pytdxmeasure:
 	#
 */
 type reportRequest struct {
-	subtype          uint8
-	reportData       *[64]byte
-	reportDataLength uint32
-	tdReport         *[1024]byte
-	tdReportLength   uint32
+	ReportData       [64]byte
+	TdReport         [1024]byte
 }
 
 // https://github.com/intel/SGXDataCenterAttestationPrimitives/blob/c057b236790834cf7e547ebf90da91c53c7ed7f9/QuoteGeneration/quote_wrapper/tdx_attest/tdx_attest.c#L70-L80
