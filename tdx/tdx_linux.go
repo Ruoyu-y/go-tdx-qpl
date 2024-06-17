@@ -10,10 +10,10 @@ import (
 	"unsafe"
 
 	"github.com/Ruoyu-y/go-tdx-qpl/tdx/tdxproto"
-	"github.com/cc-api/cc-trusted-vmsdk/src/golang/cctrusted_vm/sdk"
+	sdk "github.com/cc-api/cc-trusted-vmsdk/src/golang/cctrusted_vm/sdk"
 	"github.com/vtolstov/go-ioctl"
 	"golang.org/x/sys/unix"
-	"google.golang.org/protobuf/proto"
+	//"google.golang.org/protobuf/proto"
 )
 
 // tdxQuoteType is the type of quote to request.
