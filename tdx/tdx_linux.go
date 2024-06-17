@@ -10,6 +10,7 @@ import (
 	"unsafe"
 
 	"github.com/Ruoyu-y/go-tdx-qpl/tdx/tdxproto"
+	"github.com/cc-api/cc-trusted-vmsdk/src/golang/cctrusted_vm/sdk"
 	"github.com/vtolstov/go-ioctl"
 	"golang.org/x/sys/unix"
 	"google.golang.org/protobuf/proto"
@@ -87,6 +88,17 @@ func GenerateQuote(tdx device, userData []byte) ([]byte, error) {
 
 	var reportData [64]byte
 	copy(reportData[:], userData)
+	inst, err := sdk.GetSDKInstance(nil)
+        if err != nil {
+                return nil, fmt.Errorf("Failed in getting sdk instance")
+        }
+        report, err := inst.GetCCReport(nil, reportData, nil)
+        if err != nil {
+                return nil, err
+        }
+        return report, nil
+
+	/*
 	tdReport, err := createReport(tdx, reportData)
 	if err != nil {
 		return nil, fmt.Errorf("creating report: %w", err)
@@ -141,6 +153,7 @@ func GenerateQuote(tdx device, userData []byte) ([]byte, error) {
 	}
 
 	return quoteResponse.GetGetQuoteResponse().Quote, nil
+ */
 }
 
 func createReport(tdx device, reportData [64]byte) ([1024]byte, error) {
