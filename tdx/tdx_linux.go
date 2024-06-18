@@ -97,8 +97,8 @@ func GenerateQuote(tdx device, userData []byte) ([]byte, error) {
         if err != nil {
                 return nil, err
         }
-	fullReport := append(report.Header.raw.Binary, report.Body.raw.Binary)
-	fullReport = append(fullReport, report.Signature.raw.Binary)
+	fullReport := append(report.Quote.Header.raw.Binary, report.Quote.Body.raw.Binary)
+	fullReport = append(fullReport, report.Quote.Signature.raw.Binary)
         return fullReport, nil
 
 	/*
