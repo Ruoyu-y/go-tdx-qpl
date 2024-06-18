@@ -6,6 +6,7 @@ package tdx
 import (
 	"crypto/sha512"
 	"encoding/binary"
+	"encoding/base64"
 	"fmt"
 	"unsafe"
 
@@ -92,11 +93,13 @@ func GenerateQuote(tdx device, userData []byte) ([]byte, error) {
         if err != nil {
                 return nil, fmt.Errorf("Failed in getting sdk instance")
         }
-        report, err := inst.GetCCReport(nil, reportData, nil)
+        report, err := inst.GetCCReport("", base64.StdEncoding.EncodeToString(reportData), nil)
         if err != nil {
                 return nil, err
         }
-        return report, nil
+	fullReport := append(report.Header.raw.Binary, report.Body.raw.Binary)
+	fullReport = append(fullReport, report.Signature.raw.Binary)
+        return fullReport, nil
 
 	/*
 	tdReport, err := createReport(tdx, reportData)
