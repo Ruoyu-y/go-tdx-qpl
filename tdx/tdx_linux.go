@@ -12,6 +12,7 @@ import (
 
 	"github.com/Ruoyu-y/go-tdx-qpl/tdx/tdxproto"
 	sdk "github.com/cc-api/cc-trusted-vmsdk/src/golang/cctrusted_vm/sdk"
+	tdx "github.com/cc-api/cc-trusted-api/common/golang/cctrusted_base/tdx"
 	"github.com/vtolstov/go-ioctl"
 	"golang.org/x/sys/unix"
 	//"google.golang.org/protobuf/proto"
@@ -97,9 +98,13 @@ func GenerateQuote(tdx device, userData []byte) ([]byte, error) {
         if err != nil {
                 return nil, err
         }
-	print(type(report))
-	fullReport := append(report.Quote.Header.raw.Binary, report.Quote.Body.raw.Binary)
-	fullReport = append(fullReport, report.Quote.Signature.raw.Binary)
+	
+	tdreport, ok := report.(tdx.TdxReport)
+	if !ok {
+		return nil, fmt.Errorf("Failed in fetching TDX Quote.")
+	}
+	fullReport := append(tdreport.Quote.Header.raw.Binary, tdreport.Quote.Body.raw.Binary)
+	fullReport = append(fullReport, tdreport.Quote.Signature.raw.Binary)
         return fullReport, nil
 
 	/*
