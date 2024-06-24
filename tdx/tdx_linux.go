@@ -12,7 +12,7 @@ import (
 
 	"github.com/Ruoyu-y/go-tdx-qpl/tdx/tdxproto"
 	sdk "github.com/cc-api/cc-trusted-vmsdk/src/golang/cctrusted_vm/sdk"
-	tdx "github.com/cc-api/cc-trusted-api/common/golang/cctrusted_base/tdx/report"
+	cctdx "github.com/cc-api/cc-trusted-api/common/golang/cctrusted_base/tdx"
 	"github.com/vtolstov/go-ioctl"
 	"golang.org/x/sys/unix"
 	//"google.golang.org/protobuf/proto"
@@ -97,7 +97,7 @@ func GenerateQuote(tdx device, userData []byte) ([]byte, error) {
                 return nil, err
         }
 
-	var tdreport tdx.TdxReport
+	tdreport := cctdx.TdxReport{}
 	var ok bool
 	if tdreport, ok = report.(tdx.TdxReport); !ok {
 		return nil, fmt.Errorf("Failed in fetching TDX Quote.")
