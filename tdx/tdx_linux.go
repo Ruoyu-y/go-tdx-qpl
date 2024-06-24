@@ -88,13 +88,11 @@ func GenerateQuote(tdx device, userData []byte) ([]byte, error) {
 		return nil, fmt.Errorf("user data must not be longer than 64 bytes, received %d bytes", len(userData))
 	}
 
-	var reportData [64]byte
-	copy(reportData[:], userData)
 	inst, err := sdk.GetSDKInstance(nil)
         if err != nil {
                 return nil, fmt.Errorf("Failed in getting sdk instance")
         }
-        report, err := inst.GetCCReport("", base64.StdEncoding.EncodeToString(reportData), nil)
+        report, err := inst.GetCCReport("", base64.StdEncoding.EncodeToString(userData), nil)
         if err != nil {
                 return nil, err
         }
