@@ -96,9 +96,9 @@ func GenerateQuote(tdx device, userData []byte) ([]byte, error) {
         if err != nil {
                 return nil, err
         }
-	
-	tdreport, ok := report.(tdx.TdxReport)
-	if !ok {
+
+	var tdreport tdx.TdxReport
+	if tdreport, ok := report.(tdx.TdxReport); !ok {
 		return nil, fmt.Errorf("Failed in fetching TDX Quote.")
 	}
 	fullReport := append(tdreport.Quote.Header.raw.Binary, tdreport.Quote.Body.raw.Binary)
