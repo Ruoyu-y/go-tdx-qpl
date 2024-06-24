@@ -12,7 +12,7 @@ import (
 
 	"github.com/Ruoyu-y/go-tdx-qpl/tdx/tdxproto"
 	sdk "github.com/cc-api/cc-trusted-vmsdk/src/golang/cctrusted_vm/sdk"
-	tdx "github.com/cc-api/cc-trusted-api/common/golang/cctrusted_base/tdx"
+	tdx "github.com/cc-api/cc-trusted-api/common/golang/cctrusted_base/tdx/report"
 	"github.com/vtolstov/go-ioctl"
 	"golang.org/x/sys/unix"
 	//"google.golang.org/protobuf/proto"
