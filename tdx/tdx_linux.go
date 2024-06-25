@@ -97,14 +97,13 @@ func GenerateQuote(tdx device, userData []byte) ([]byte, error) {
                 return nil, err
         }
 
-	reportContent := *report
-	tdreport = cctdx.TdxReport{}
-	var ok bool
-	if tdreport, ok = reportContent.(cctdx.TdxReport); !ok {
+	tdreport, ok := reportContent.(*cctdx.TdxReport)
+	if !ok {
 		return nil, fmt.Errorf("Failed in fetching TDX Quote.")
 	}
-	fullReport := append(tdreport.Quote.Header.raw.Binary, tdreport.Quote.Body.raw.Binary)
-	fullReport = append(fullReport, tdreport.Quote.Signature.raw.Binary)
+	fullReport := append(tdreport.Quote.Header.raw.Binary, tdreport.Quote.Body.raw.Binary...)
+	sig, ok := tdreport.Quote.Signature.(*cctdx.TdxQuoteSignatureEcdsa256)
+	fullReport = append(fullReport, sig.raw.Binary...)
         return fullReport, nil
 
 	/*
