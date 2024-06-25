@@ -1,7 +1,7 @@
 github.com/AdaLogics/go-fuzz-headers v0.0.0-20230106234847-43070de90fa1 h1:EKPd1INOIyr5hWOWhvpmQpY6tKjeG0hT1s3AMC/9fic=
 github.com/AdaLogics/go-fuzz-headers v0.0.0-20230106234847-43070de90fa1/go.mod h1:VzwV+t+dZ9j/H867F1M2ziD+yLHtB46oM35FxxMJ4d0=
-github.com/cc-api/cc-trusted-api/common/golang/cctrusted_base v0.0.0-20240418131523-3b0ab7d9578e h1:oKNunMQImCfmcSAARhpgPHKgs0bln70tIBETaV/8LVw=
-github.com/cc-api/cc-trusted-api/common/golang/cctrusted_base v0.0.0-20240418131523-3b0ab7d9578e/go.mod h1:0rggJ3Z7AxSCbOfi2PBO98sAftWWsI39V7v/aG9xPmQ=
+github.com/cc-api/cc-trusted-api/common/golang/cctrusted_base v0.0.0-20240625051511-8ed5e29a343b h1:7l4/CUPejU1DhQDJ0LOcjD8k9GcaYFBo01NtqeqTMP8=
+github.com/cc-api/cc-trusted-api/common/golang/cctrusted_base v0.0.0-20240625051511-8ed5e29a343b/go.mod h1:0rggJ3Z7AxSCbOfi2PBO98sAftWWsI39V7v/aG9xPmQ=
 github.com/cc-api/cc-trusted-vmsdk/src/golang/cctrusted_vm v0.0.0-20240614183543-301fffb9c241 h1:EIweUxRqEdaQSeuU7i+DsyKo6dOGvJexhuNOTiSxeO0=
 github.com/cc-api/cc-trusted-vmsdk/src/golang/cctrusted_vm v0.0.0-20240614183543-301fffb9c241/go.mod h1:aYPzt6UnvMLx7H/YSWOPFp15jE7Tte428XLCGWJe0mQ=
 github.com/creack/pty v1.1.9/go.mod h1:oKZEueFk5CKHvIhNR5MUki03XCEU+Q6VDXinZuGJ33E=

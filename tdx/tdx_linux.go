@@ -101,13 +101,12 @@ func GenerateQuote(tdx device, userData []byte) ([]byte, error) {
 	if !ok {
 		return nil, fmt.Errorf("Failed in fetching TDX Quote.")
 	}
-	fullReport := append(tdreport.Quote.Header.raw.Binary, tdreport.Quote.Body.raw.Binary...)
-	sig, ok := tdreport.Quote.Signature.(*cctdx.TdxQuoteSignatureEcdsa256)
-	if !ok {
-		return nil, fmt.Errorf("Failed in fetching TDX Quote.")
+
+	fullReport, err := tdreport.Marshal()
+	if err != nil {
+		return nil, err
 	}
-	fullReport = append(fullReport, sig.raw.Binary...)
-        return fullReport, nil
+	return fullReport, nil
 
 	/*
 	tdReport, err := createReport(tdx, reportData)
