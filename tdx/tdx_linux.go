@@ -97,7 +97,7 @@ func GenerateQuote(tdx device, userData []byte) ([]byte, error) {
                 return nil, err
         }
 
-	tdreport, ok := reportContent.(*cctdx.TdxReport)
+	tdreport, ok := report.(*cctdx.TdxReport)
 	if !ok {
 		return nil, fmt.Errorf("Failed in fetching TDX Quote.")
 	}
