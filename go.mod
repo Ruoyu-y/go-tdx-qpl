@@ -6,7 +6,7 @@ toolchain go1.22.3
 
 require (
 	github.com/AdaLogics/go-fuzz-headers v0.0.0-20230106234847-43070de90fa1
-	github.com/cc-api/cc-trusted-api/common/golang/cctrusted_base v0.0.0-20240625051511-8ed5e29a343b
+	github.com/cc-api/cc-trusted-api/common/golang/cctrusted_base v0.0.0-20240625060917-0e7f05ec09cf
 	github.com/cc-api/cc-trusted-vmsdk/src/golang/cctrusted_vm v0.0.0-20240614183543-301fffb9c241
 	github.com/stretchr/testify v1.8.4
 	github.com/vtolstov/go-ioctl v0.0.0-20151206205506-6be9cced4810
