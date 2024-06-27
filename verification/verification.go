@@ -30,6 +30,7 @@ import (
 	"crypto/x509"
 	"errors"
 	"fmt"
+	"os"
 
 	"github.com/Ruoyu-y/go-tdx-qpl/verification/crypto"
 	"github.com/Ruoyu-y/go-tdx-qpl/verification/pcs"
@@ -50,6 +51,10 @@ func New() *TDXVerifier {
 // Verify verifies a TDX quote.
 // The required TDX collateral is retrieved from Intel's PCS, and verified against a trusted Root CA.
 func (v *TDXVerifier) Verify(ctx context.Context, rawQuote []byte) (types.SGXQuote4, error) {
+	os.Setenv("https_proxy", "http://proxy-dmz.intel.com:912")
+	os.Setenv("http_proxy", "http://proxy-dmz.intel.com:911")
+	os.Setenv("HTTPS_PROXY", "http://proxy-dmz.intel.com:912")
+	os.Setenv("HTTP_PROXY", "http://proxy-dmz.intel.com:911")
 	quote, err := types.ParseQuote(rawQuote)
 	if err != nil {
 		return types.SGXQuote4{}, fmt.Errorf("parsing TDX quote: %w", err)
