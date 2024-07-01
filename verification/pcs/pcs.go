@@ -40,6 +40,7 @@ package pcs
 
 import (
 	"context"
+	"crypto/tls"
 	"crypto/x509"
 	"encoding/hex"
 	"encoding/json"
@@ -110,10 +111,15 @@ type TrustedServicesClient struct {
 
 // New returns a new TrustedServicesClient.
 func New() *TrustedServicesClient {
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+	client := &http.Client{Transport: tr}
 	return &TrustedServicesClient{
 		api: &pcsAPIClient{
 			rootCA: crypto.MustParsePEMCertificate([]byte(rootCA)),
-			client: http.DefaultClient,
+			//client: http.DefaultClient,
+			client: client,
 		},
 		clock: clock.RealClock{},
 	}
