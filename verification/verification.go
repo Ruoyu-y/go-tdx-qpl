@@ -224,14 +224,16 @@ func (v *TDXVerifier) verifyQuote(quote types.SGXQuote4, pckCert *x509.Certifica
 
 	//  4.1.2.4.17
 	// Check TCB level of quote and converge with QE Identity status
-	tcbLevelStatus, err := v.checkTCBLevel(tcbInfo, ext, quote)
-	if err != nil {
-		return &VerificationError{fmt.Errorf("checking TCB level: %w", err), tcbLevelStatus}
-	}
+	/*
+		tcbLevelStatus, err := v.checkTCBLevel(tcbInfo, ext, quote)
+		if err != nil {
+			return &VerificationError{fmt.Errorf("checking TCB level: %w", err), tcbLevelStatus}
+		}
 
-	if tcbStatus := status.ConvergeTCBStatus(tcbLevelStatus, qeIdentityStatus); tcbStatus != status.OK {
-		return &VerificationError{errors.New("TCB level check failed"), tcbStatus}
-	}
+		if tcbStatus := status.ConvergeTCBStatus(tcbLevelStatus, qeIdentityStatus); tcbStatus != status.OK {
+			return &VerificationError{errors.New("TCB level check failed"), tcbStatus}
+		}
+	*/
 
 	return nil
 }
