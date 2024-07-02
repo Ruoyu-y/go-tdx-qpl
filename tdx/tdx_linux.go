@@ -5,7 +5,6 @@ package tdx
 
 import (
 	"crypto/sha512"
-	"encoding/base64"
 	"encoding/binary"
 	"fmt"
 	"unsafe"
@@ -92,7 +91,8 @@ func GenerateQuote(tdx device, userData []byte, nonce []byte) ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("Failed in getting sdk instance")
 	}
-	report, err := inst.GetCCReport(base64.StdEncoding.EncodeToString(nonce), base64.StdEncoding.EncodeToString(userData), nil)
+	//report, err := inst.GetCCReport(base64.StdEncoding.EncodeToString(nonce), base64.StdEncoding.EncodeToString(userData), nil)
+	report, err := inst.GetCCReport(nonce, userData, nil)
 	if err != nil {
 		return nil, err
 	}
