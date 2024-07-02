@@ -28,7 +28,7 @@ func testTDX() error {
 	}
 
 	reportData := []byte{'H', 'e', 'l', 'l', 'o', ' ', 'f', 'r', 'o', 'm', ' ', 'E', 'd', 'g', 'e', 'l', 'e', 's', 's', ' ', 'S', 'y', 's', 't', 'e', 'm', 's', '!'}
-	quote, err := tdx.GenerateQuote(handle, reportData)
+	quote, err := tdx.GenerateQuote(handle, reportData, nil)
 	if err != nil {
 		return err
 	}

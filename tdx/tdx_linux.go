@@ -5,14 +5,14 @@ package tdx
 
 import (
 	"crypto/sha512"
-	"encoding/binary"
 	"encoding/base64"
+	"encoding/binary"
 	"fmt"
 	"unsafe"
 
 	"github.com/Ruoyu-y/go-tdx-qpl/tdx/tdxproto"
-	sdk "github.com/cc-api/cc-trusted-vmsdk/src/golang/cctrusted_vm/sdk"
 	cctdx "github.com/cc-api/cc-trusted-api/common/golang/cctrusted_base/tdx"
+	sdk "github.com/cc-api/cc-trusted-vmsdk/src/golang/cctrusted_vm/sdk"
 	"github.com/vtolstov/go-ioctl"
 	"golang.org/x/sys/unix"
 	//"google.golang.org/protobuf/proto"
@@ -83,19 +83,19 @@ func ReadMeasurements(tdx device) ([5][48]byte, error) {
 
 // GenerateQuote generates a TDX quote for the given user data.
 // User Data may not be longer than 64 bytes.
-func GenerateQuote(tdx device, userData []byte) ([]byte, error) {
+func GenerateQuote(tdx device, userData []byte, nonce []byte) ([]byte, error) {
 	if len(userData) > 64 {
 		return nil, fmt.Errorf("user data must not be longer than 64 bytes, received %d bytes", len(userData))
 	}
 
 	inst, err := sdk.GetSDKInstance(nil)
-        if err != nil {
-                return nil, fmt.Errorf("Failed in getting sdk instance")
-        }
-        report, err := inst.GetCCReport("", base64.StdEncoding.EncodeToString(userData), nil)
-        if err != nil {
-                return nil, err
-        }
+	if err != nil {
+		return nil, fmt.Errorf("Failed in getting sdk instance")
+	}
+	report, err := inst.GetCCReport(base64.StdEncoding.EncodeToString(nonce), base64.StdEncoding.EncodeToString(userData), nil)
+	if err != nil {
+		return nil, err
+	}
 
 	tdreport, ok := report.(*cctdx.TdxReport)
 	if !ok {
@@ -109,68 +109,68 @@ func GenerateQuote(tdx device, userData []byte) ([]byte, error) {
 	return fullReport, nil
 
 	/*
-	tdReport, err := createReport(tdx, reportData)
-	if err != nil {
-		return nil, fmt.Errorf("creating report: %w", err)
-	}
+		tdReport, err := createReport(tdx, reportData)
+		if err != nil {
+			return nil, fmt.Errorf("creating report: %w", err)
+		}
 
-	getQuoteRequest := tdxproto.Request_GetQuoteRequest{
-		Report: tdReport[:],
-		IdList: tdxReportUUID,
-	}
+		getQuoteRequest := tdxproto.Request_GetQuoteRequest{
+			Report: tdReport[:],
+			IdList: tdxReportUUID,
+		}
 
-	quoteType := tdxQuoteType
-	quoteRequest := tdxproto.Request{
-		Type: &quoteType,
-		Msg:  &tdxproto.Request_GetQuoteRequest_{GetQuoteRequest: &getQuoteRequest},
-	}
-	serializedQuoteRequest, err := proto.Marshal(&quoteRequest)
-	if err != nil {
-		return nil, fmt.Errorf("marshaling quote request: %w", err)
-	}
+		quoteType := tdxQuoteType
+		quoteRequest := tdxproto.Request{
+			Type: &quoteType,
+			Msg:  &tdxproto.Request_GetQuoteRequest_{GetQuoteRequest: &getQuoteRequest},
+		}
+		serializedQuoteRequest, err := proto.Marshal(&quoteRequest)
+		if err != nil {
+			return nil, fmt.Errorf("marshaling quote request: %w", err)
+		}
 
-	if len(serializedQuoteRequest) > 16356 {
-		return nil, fmt.Errorf("invalid serialized quote request length: expected no more than 16356 bytes, got %d bytes", len(serializedQuoteRequest))
-	}
-	protobufData := [16356]byte{}
-	copy(protobufData[:], serializedQuoteRequest)
+		if len(serializedQuoteRequest) > 16356 {
+			return nil, fmt.Errorf("invalid serialized quote request length: expected no more than 16356 bytes, got %d bytes", len(serializedQuoteRequest))
+		}
+		protobufData := [16356]byte{}
+		copy(protobufData[:], serializedQuoteRequest)
 
-	var transferLength [4]byte
-	binary.BigEndian.PutUint32(transferLength[:], uint32(len(serializedQuoteRequest)))
+		var transferLength [4]byte
+		binary.BigEndian.PutUint32(transferLength[:], uint32(len(serializedQuoteRequest)))
 
-	quoteRequestWrapper := requestQuoteWrapper{
-		version:     1,
-		status:      0,
-		inputLength: 4 + uint32(len(serializedQuoteRequest)),
-		// outputLength:   uint32(unsafe.Sizeof(tdxRequestQuoteWrapper{})) - 24,
-		outputLength:   16360,
-		transferLength: transferLength,
-		protobufData:   protobufData,
-	}
+		quoteRequestWrapper := requestQuoteWrapper{
+			version:     1,
+			status:      0,
+			inputLength: 4 + uint32(len(serializedQuoteRequest)),
+			// outputLength:   uint32(unsafe.Sizeof(tdxRequestQuoteWrapper{})) - 24,
+			outputLength:   16360,
+			transferLength: transferLength,
+			protobufData:   protobufData,
+		}
 
-	outerWrapper := requestQuoteOuterWrapper{
-		blob:   uintptr(unsafe.Pointer(&quoteRequestWrapper)),
-		length: unsafe.Sizeof(quoteRequestWrapper),
-	}
+		outerWrapper := requestQuoteOuterWrapper{
+			blob:   uintptr(unsafe.Pointer(&quoteRequestWrapper)),
+			length: unsafe.Sizeof(quoteRequestWrapper),
+		}
 
-	if _, _, errno := unix.Syscall(unix.SYS_IOCTL, tdx.Fd(), requestQuote, uintptr(unsafe.Pointer(&outerWrapper))); errno != 0 {
-		return nil, fmt.Errorf("generating quote: %w", errno)
-	}
+		if _, _, errno := unix.Syscall(unix.SYS_IOCTL, tdx.Fd(), requestQuote, uintptr(unsafe.Pointer(&outerWrapper))); errno != 0 {
+			return nil, fmt.Errorf("generating quote: %w", errno)
+		}
 
-	var quoteResponse tdxproto.Response
-	if err := proto.Unmarshal(quoteRequestWrapper.protobufData[:quoteRequestWrapper.outputLength-4], &quoteResponse); err != nil {
-		return nil, err
-	}
+		var quoteResponse tdxproto.Response
+		if err := proto.Unmarshal(quoteRequestWrapper.protobufData[:quoteRequestWrapper.outputLength-4], &quoteResponse); err != nil {
+			return nil, err
+		}
 
-	return quoteResponse.GetGetQuoteResponse().Quote, nil
- */
+		return quoteResponse.GetGetQuoteResponse().Quote, nil
+	*/
 }
 
 func createReport(tdx device, reportData [64]byte) ([1024]byte, error) {
 	var tdReport [1024]byte
 	reportRequest := reportRequest{
-		ReportData:       reportData,
-		TdReport:         tdReport,
+		ReportData: reportData,
+		TdReport:   tdReport,
 	}
 
 	if _, _, errno := unix.Syscall(unix.SYS_IOCTL, uintptr(tdx.Fd()), requestReport, uintptr(unsafe.Pointer(&reportRequest))); errno != 0 {
@@ -205,8 +205,8 @@ Taken from pytdxmeasure:
 	#
 */
 type reportRequest struct {
-	ReportData       [64]byte
-	TdReport         [1024]byte
+	ReportData [64]byte
+	TdReport   [1024]byte
 }
 
 // https://github.com/intel/SGXDataCenterAttestationPrimitives/blob/c057b236790834cf7e547ebf90da91c53c7ed7f9/QuoteGeneration/quote_wrapper/tdx_attest/tdx_attest.c#L70-L80
