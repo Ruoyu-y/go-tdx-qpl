@@ -92,7 +92,7 @@ func GenerateQuote(tdx device, userData []byte, nonce []byte) ([]byte, error) {
 		return nil, fmt.Errorf("Failed in getting sdk instance")
 	}
 	//report, err := inst.GetCCReport(base64.StdEncoding.EncodeToString(nonce), base64.StdEncoding.EncodeToString(userData), nil)
-	report, err := inst.GetCCReport(nonce, userData, nil)
+	report, err := inst.GetCCReport(string(nonce), string(userData), nil)
 	if err != nil {
 		return nil, err
 	}
