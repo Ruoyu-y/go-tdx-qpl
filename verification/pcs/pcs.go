@@ -246,15 +246,16 @@ type pcsAPIClient struct {
 
 // getRootCACRL retrieves the Root CA CRL from Intel's PCS.
 func (c *pcsAPIClient) getRootCACRL(ctx context.Context) (*x509.RevocationList, error) {
-	url, err := url.Parse(rootCACRLURL)
-	if err != nil {
-		return nil, fmt.Errorf("parsing Root CA CRL URL: %w", err)
-	}
+	/*
+		url, err := url.Parse(rootCACRLURL)
+		if err != nil {
+			return nil, fmt.Errorf("parsing Root CA CRL URL: %w", err)
+		}
 
-	/*rootCACRLRaw, _, err := c.getFromPCS(ctx, url, "")
-	if err != nil {
-		return nil, fmt.Errorf("getting Root CA CRL from PCS: %w", err)
-	}
+		rootCACRLRaw, _, err := c.getFromPCS(ctx, url, "")
+		if err != nil {
+			return nil, fmt.Errorf("getting Root CA CRL from PCS: %w", err)
+		}
 	*/
 	rootCACRLRaw, err := ioutil.ReadFile("IntelSGXRootCA.der")
 	if err != nil {
