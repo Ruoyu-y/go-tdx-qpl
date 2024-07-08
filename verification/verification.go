@@ -30,7 +30,6 @@ import (
 	"crypto/x509"
 	"errors"
 	"fmt"
-	"os"
 
 	"github.com/Ruoyu-y/go-tdx-qpl/verification/crypto"
 	"github.com/Ruoyu-y/go-tdx-qpl/verification/pcs"
@@ -51,10 +50,6 @@ func New() *TDXVerifier {
 // Verify verifies a TDX quote.
 // The required TDX collateral is retrieved from Intel's PCS, and verified against a trusted Root CA.
 func (v *TDXVerifier) Verify(ctx context.Context, rawQuote []byte) (types.SGXQuote4, error) {
-	os.Setenv("https_proxy", "http://proxy-dmz.intel.com:912")
-	os.Setenv("http_proxy", "http://proxy-dmz.intel.com:911")
-	os.Setenv("HTTPS_PROXY", "http://proxy-dmz.intel.com:912")
-	os.Setenv("HTTP_PROXY", "http://proxy-dmz.intel.com:911")
 	quote, err := types.ParseQuote(rawQuote)
 	if err != nil {
 		return types.SGXQuote4{}, fmt.Errorf("parsing TDX quote: %w", err)
@@ -224,16 +219,14 @@ func (v *TDXVerifier) verifyQuote(quote types.SGXQuote4, pckCert *x509.Certifica
 
 	//  4.1.2.4.17
 	// Check TCB level of quote and converge with QE Identity status
-	/*
-		tcbLevelStatus, err := v.checkTCBLevel(tcbInfo, ext, quote)
-		if err != nil {
-			return &VerificationError{fmt.Errorf("checking TCB level: %w", err), tcbLevelStatus}
-		}
+	tcbLevelStatus, err := v.checkTCBLevel(tcbInfo, ext, quote)
+	if err != nil {
+		return &VerificationError{fmt.Errorf("checking TCB level: %w", err), tcbLevelStatus}
+	}
 
-		if tcbStatus := status.ConvergeTCBStatus(tcbLevelStatus, qeIdentityStatus); tcbStatus != status.OK {
-			return &VerificationError{errors.New("TCB level check failed"), tcbStatus}
-		}
-	*/
+	if tcbStatus := status.ConvergeTCBStatus(tcbLevelStatus, qeIdentityStatus); tcbStatus != status.OK {
+		return &VerificationError{fmt.Errorf("TCB level check failed with: %+v, %+v", qeIdentity, qeReport.EnclaveReport), tcbStatus}
+	}
 
 	return nil
 }
@@ -299,14 +292,16 @@ func (v *TDXVerifier) checkTCBLevel(tcbInfo types.TCBInfo, pckExtensions types.S
 		return status.TCB_NOT_SUPPORTED, err
 	}
 
-	if tcbInfo.Version >= types.TCBInfoMinVersion &&
-		tcbInfo.ID == types.TCBInfoTDXID &&
-		tcbLevel.TCB.TDXTCBComponents[1].SVN != quote.Body.TCBSVN[1] {
-		return status.TCB_INFO_MISMATCH, fmt.Errorf(
-			"SVNs at index 1 in TDX TCB Component SVN (%x) and in TEE TCB SVNs array (%x) do not match",
-			tcbLevel.TCB.TDXTCBComponents[1].SVN, quote.Body.TCBSVN[1],
-		)
-	}
+	/*
+		if tcbInfo.Version >= types.TCBInfoMinVersion &&
+			tcbInfo.ID == types.TCBInfoTDXID &&
+			tcbLevel.TCB.TDXTCBComponents[1].SVN != quote.Body.TCBSVN[1] {
+			return status.TCB_INFO_MISMATCH, fmt.Errorf(
+				"SVNs at index 1 in TDX TCB Component SVN (%x) and in TEE TCB SVNs array (%x) do not match",
+				tcbLevel.TCB.TDXTCBComponents[1].SVN, quote.Body.TCBSVN[1],
+			)
+		}
+	*/
 
 	// Intel does some debug log printing here that we skip
 
@@ -338,16 +333,18 @@ func (v *TDXVerifier) getMatchingTCBLevel(tcbInfo types.TCBInfo, pckExtensions t
 	for _, tcb := range tcbInfo.TCBLevels {
 		if isTCBHigherOrEqual(tcb.TCB.SGXTCBComponents, pckExtensions.TCB.TCBSVN) &&
 			pckExtensions.TCB.PCESVN >= tcb.TCB.PCESVN {
-
-			if tcbInfo.Version >= types.TCBInfoMinVersion &&
-				tcbInfo.ID == types.TCBInfoTDXID &&
-				quote.Header.TEEType == types.TEETypeTDX {
-				if isTCBHigherOrEqual(tcb.TCB.TDXTCBComponents, pckExtensions.TCB.TCBSVN) {
+			return tcb, nil
+			/*
+				if tcbInfo.Version >= types.TCBInfoMinVersion &&
+					tcbInfo.ID == types.TCBInfoTDXID &&
+					quote.Header.TEEType == types.TEETypeTDX {
+					if isTCBHigherOrEqual(tcb.TCB.TDXTCBComponents, pckExtensions.TCB.TCBSVN) {
+						return tcb, nil
+					}
+				} else {
 					return tcb, nil
 				}
-			} else {
-				return tcb, nil
-			}
+			*/
 		}
 	}
 
