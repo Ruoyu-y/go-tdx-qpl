@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/edgelesssys/go-tdx-qpl/verification/pcs"
+	"github.com/Ruoyu-y/go-tdx-qpl/verification/pcs"
 )
 
 func main() {

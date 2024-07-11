@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/edgelesssys/go-tdx-qpl/tdx"
+	"github.com/Ruoyu-y/go-tdx-qpl/tdx"
 )
 
 func main() {
@@ -16,9 +16,12 @@ func main() {
 }
 
 func testTDX() error {
-	handle, err := os.Open(tdx.GuestDevice)
+	handle, err := os.Open(tdx.GuestDevice_1_0)
 	if err != nil {
-		return err
+		handle, err = os.Open(tdx.GuestDevice_1_5)
+		if err != nil {
+			return err
+		}
 	}
 	defer handle.Close()
 
@@ -28,7 +31,7 @@ func testTDX() error {
 	}
 
 	reportData := []byte{'H', 'e', 'l', 'l', 'o', ' ', 'f', 'r', 'o', 'm', ' ', 'E', 'd', 'g', 'e', 'l', 'e', 's', 's', ' ', 'S', 'y', 's', 't', 'e', 'm', 's', '!'}
-	quote, err := tdx.GenerateQuote(handle, reportData)
+	quote, err := tdx.GenerateQuote(handle, reportData, nil)
 	if err != nil {
 		return err
 	}

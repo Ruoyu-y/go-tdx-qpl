@@ -14,13 +14,13 @@ This library comes in two parts:
 This repo provides a simple Go library to enable these features and is used by [Constellation](https://github.com/edgelesssys/constellation) to enable TDX attestation.
 
 ## Restrictions
-- The current version is based on [DCAP 1.15](https://github.com/intel/SGXDataCenterAttestationPrimitives/releases/tag/DCAP_1.15). 
-It has been tested with the kernel and libraries from the tdx-tools release [2023ww01](https://github.com/intel/tdx-tools/releases/tag/2023ww01).
+- The current version is based on [DCAP 1.21](https://github.com/intel/SGXDataCenterAttestationPrimitives/releases/tag/DCAP_1.21).
+It has been tested with the kernel and libraries from the upstream ubuntu 24.04 and centos release.
 Given that the UAPI for TDX is yet to be finished and upstreamed, newer versions might not be supported.
 
 - This library only supports a subset of the PCS API v4. SGX and other versions of the API are not supported and currently out of scope.
 
-In case you encounter any issues despite the known restrictions, feel free to open [an issue](https://github.com/edgelesssys/go-tdx-qpl/issues/new/choose).
+In case you encounter any issues despite the known restrictions, feel free to open [an issue](https://github.com/Ruoyu-y/go-tdx-qpl/issues/new/choose).
 
 ## Examples
 An example quote can be found [here](blobs/quote). Other example and test data can also be found in the [`blobs`](blobs) directory, or alternatively directly from [Intel's DCAP repo](https://github.com/intel/SGXDataCenterAttestationPrimitives/tree/master/QuoteVerification/QVL/Src/AttestationApp/sampleData/tdx).

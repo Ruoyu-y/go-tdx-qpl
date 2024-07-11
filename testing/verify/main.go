@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/edgelesssys/go-tdx-qpl/blobs"
-	"github.com/edgelesssys/go-tdx-qpl/verification"
+	"github.com/Ruoyu-y/go-tdx-qpl/blobs"
+	"github.com/Ruoyu-y/go-tdx-qpl/verification"
 )
 
 func main() {

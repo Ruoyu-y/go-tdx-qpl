@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/edgelesssys/go-tdx-qpl/verification/status"
+	"github.com/Ruoyu-y/go-tdx-qpl/verification/status"
 )
 
 const (
@@ -179,7 +179,7 @@ func (q *QEIdentity) UnmarshalJSON(data []byte) error {
 // GetTCBStatus returns the TCB status from QEIdentity for the given ISV SVN.
 func (i *QEIdentity) GetTCBStatus(isvSvn uint16) status.TCBStatus {
 	for _, tcbLevel := range i.TCBLevels {
-		if tcbLevel.TCB.ISVSVN == isvSvn {
+		if tcbLevel.TCB.ISVSVN <= isvSvn {
 			return tcbLevel.TCBStatus
 		}
 	}

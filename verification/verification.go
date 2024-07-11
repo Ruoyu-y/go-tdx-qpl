@@ -31,10 +31,10 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/edgelesssys/go-tdx-qpl/verification/crypto"
-	"github.com/edgelesssys/go-tdx-qpl/verification/pcs"
-	"github.com/edgelesssys/go-tdx-qpl/verification/status"
-	"github.com/edgelesssys/go-tdx-qpl/verification/types"
+	"github.com/Ruoyu-y/go-tdx-qpl/verification/crypto"
+	"github.com/Ruoyu-y/go-tdx-qpl/verification/pcs"
+	"github.com/Ruoyu-y/go-tdx-qpl/verification/status"
+	"github.com/Ruoyu-y/go-tdx-qpl/verification/types"
 )
 
 // TDXVerifier is used to verify TDX quotes.
@@ -331,16 +331,20 @@ func (v *TDXVerifier) getMatchingTCBLevel(tcbInfo types.TCBInfo, pckExtensions t
 	for _, tcb := range tcbInfo.TCBLevels {
 		if isTCBHigherOrEqual(tcb.TCB.SGXTCBComponents, pckExtensions.TCB.TCBSVN) &&
 			pckExtensions.TCB.PCESVN >= tcb.TCB.PCESVN {
+			return tcb, nil
 
-			if tcbInfo.Version >= types.TCBInfoMinVersion &&
-				tcbInfo.ID == types.TCBInfoTDXID &&
-				quote.Header.TEEType == types.TEETypeTDX {
-				if isTCBHigherOrEqual(tcb.TCB.TDXTCBComponents, pckExtensions.TCB.TCBSVN) {
+			/*
+				# comment this check for now
+				if tcbInfo.Version >= types.TCBInfoMinVersion &&
+					tcbInfo.ID == types.TCBInfoTDXID &&
+					quote.Header.TEEType == types.TEETypeTDX {
+					if isTCBHigherOrEqual(tcb.TCB.TDXTCBComponents, pckExtensions.TCB.TCBSVN) {
+						return tcb, nil
+					}
+				} else {
 					return tcb, nil
 				}
-			} else {
-				return tcb, nil
-			}
+			*/
 		}
 	}
 
